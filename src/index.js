@@ -15,9 +15,10 @@ import { NetworkEventsCleaner } from './services/NetworkEventsCleaner.js';
  * @param {boolean} unsetRrweb - Flag to exclude RRWEB data from the exported JSON.
  * @param {boolean} unsetNetwork - Flag to exclude network data from the exported JSON.
  * @param {boolean} removeDuplicates - Flag indicating whether duplicate content should be identified and removed.
+ * @param {boolean} prettifyContent - Flag indicating whether the content should be prettified before saving the output.
  * @return {Promise<void>} A promise that resolves when the file has been successfully processed.
  */
-async function processFile(file, sourceDir, outputDir, verbose, unsetRrweb, unsetNetwork, removeDuplicates) {
+async function processFile(file, sourceDir, outputDir, verbose, unsetRrweb, unsetNetwork, removeDuplicates, prettifyContent) {
   const filePath = path.join(sourceDir, file);
 
   if (verbose) {
@@ -66,6 +67,12 @@ async function processFile(file, sourceDir, outputDir, verbose, unsetRrweb, unse
       }
 
       sessionExporter.prepareSession();
+
+      if (prettifyContent) {
+        console.log(`✨ Pretify content...`);
+        sessionExporter.prettifyContent();
+      }
+
       sessionExporter.save(outputFileName, outputDir);
 
       console.log(`✅ File successfully processed and exported: ${path.join(outputDir, outputFileName)}.json`);
@@ -87,6 +94,7 @@ async function processFile(file, sourceDir, outputDir, verbose, unsetRrweb, unse
  * @param {boolean} [unsetRrweb=false] Optional flag for specific processing behavior related to rrweb.
  * @param {boolean} [unsetNetwork=false] Optional flag for specific processing behavior related to network processing.
  * @param {boolean} [removeDuplicates=false] - If true, duplicate content will be identified and removed.
+ * @param {boolean} [prettifyContent=false] - If true, prettifies the content before saving the output.
  * @return {Promise<void>} A promise that resolves when all files are processed and saved to the output directory.
  */
 export async function processFiles(
@@ -95,7 +103,8 @@ export async function processFiles(
   verbose = false,
   unsetRrweb = false,
   unsetNetwork = false,
-  removeDuplicates = false
+  removeDuplicates = false,
+  prettifyContent = false
 ) {
   try {
     if (!fs.existsSync(outputDir)) {
@@ -109,7 +118,7 @@ export async function processFiles(
     }
 
     for (const file of files) {
-      await processFile(file, sourceDir, outputDir, verbose, unsetRrweb, unsetNetwork, removeDuplicates);
+      await processFile(file, sourceDir, outputDir, verbose, unsetRrweb, unsetNetwork, removeDuplicates, prettifyContent);
     }
 
     if (verbose) {

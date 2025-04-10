@@ -14,6 +14,7 @@ program
   .option('-r, --unset-rrweb', 'Exclude RRWEB data from the exported JSON', false)
   .option('-n, --unset-network', 'Exclude network data from the exported JSON', false)
   .option('-d, --remove-duplicates', 'Remove duplicate entries from exported JSON', false)
+  .option('-p, --prettify-content', 'Format and prettify the exported JSON data', false)
   .action((options) => {
     console.log(`Start processing...`);
     console.log(`📂 Source: ${options.source}`);
@@ -28,7 +29,8 @@ program
       options.verbose,
       options.unsetRrweb,
       options.unsetNetwork,
-      options.removeDuplicates
+      options.removeDuplicates,
+      options.prettifyContent
     );
   });
 
