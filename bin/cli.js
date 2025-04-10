@@ -13,6 +13,7 @@ program
   .option('-v, --verbose', 'Activate detailed output', false)
   .option('-r, --unset-rrweb', 'Exclude RRWEB data from the exported JSON', false)
   .option('-n, --unset-network', 'Exclude network data from the exported JSON', false)
+  .option('-d, --remove-duplicates', 'Remove duplicate entries from exported JSON', false)
   .action((options) => {
     console.log(`Start processing...`);
     console.log(`📂 Source: ${options.source}`);
@@ -21,7 +22,14 @@ program
       console.log('📢 Verbose mode activated: Additional details are displayed.');
     }
 
-    processFiles(options.source, options.output, options.verbose, options.unsetRrweb, options.unsetNetwork);
+    processFiles(
+      options.source,
+      options.output,
+      options.verbose,
+      options.unsetRrweb,
+      options.unsetNetwork,
+      options.removeDuplicates
+    );
   });
 
 program.parse(process.argv);

@@ -122,19 +122,47 @@ A comfortable command line interface (CLI) for easy management and configuration
 
 ## 🖥️ CLI Options Overview
 
-| Option                | Description                                                                                                                | Default    |
-| --------------------- | -------------------------------------------------------------------------------------------------------------------------- | ---------- |
-| `-s, --source <path>` | Path to source directory                                                                                                   | `./source` |
-| `-o, --output <path>` | Path to output directory                                                                                                   | `./output` |
-| `-v, --verbose`       | Activate detailed output                                                                                                   | `false`    |
-| `-r, --unset-rrweb`   | Exclude RRWEB data from the exported JSON file. Use this parameter if you do not need RRWEB recordings in your output.     | `false`    |
-| `-n, --unset-network` | Exclude network data from the exported JSON file. Use this parameter if you do not need network activities in your output. | `false`    |
+| Option                    | Description                                                                                                                | Default    |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| `-s, --source <path>`     | Path to source directory                                                                                                   | `./source` |
+| `-o, --output <path>`     | Path to output directory                                                                                                   | `./output` |
+| `-v, --verbose`           | Activate detailed output                                                                                                   | `false`    |
+| `-r, --unset-rrweb`       | Exclude RRWEB data from the exported JSON file. Use this parameter if you do not need RRWEB recordings in your output.     | `false`    |
+| `-n, --unset-network`     | Exclude network data from the exported JSON file. Use this parameter if you do not need network activities in your output. | `false`    |
+| `-d, --remove-duplicates` | Remove duplicate entries from the exported JSON file. Use this parameter to ensure unique records in your output.          | `false`    |
 
 **Example Call**:
 
 ```bash
 npx requestly-decompressor -s ./input-folder -o ./output-folder -v
 ```
+
+---
+
+### 🧹 Removing Duplicates (`--remove-duplicates`)
+
+The `--remove-duplicates` parameter provides a way to eliminate redundant network events in the exported JSON files. This feature is particularly useful when you need clean, unique datasets
+for your analysis.
+
+#### How It Works:
+
+When activating this option, the decompressor processes all network events and removes duplicates based on an intelligent comparison algorithm:
+
+1. **URL Normalization**: URLs are normalized by sorting query parameters alphabetically. This ensures that URLs that are semantically identical but have different parameter orders are recognized as
+   the same.
+2. **JSON Normalization**: Request and response data are normalized by comparing JSON objects with alphabetically sorted keys. This ensures that JSON objects with identical content but different key
+   order are recognized as duplicates.
+3. **Time-Independent Comparison**: To identify true duplicates, time-dependent values (such as `timestamp` and `responseTime`) are ignored during duplicate detection, as identical requests can occur
+   at different times.
+4. **Complete Content Comparison**: The algorithm not only recognizes identical key structures but also compares all values within the network events. Only when both the structure and all values match
+   is an event recognized as a duplicate and removed.
+
+#### When to Use This Option:
+
+- When analyzing browser sessions with recurring API calls
+- When cleaning network data for presentations or reports
+- To reduce file size and improve processing efficiency
+- When identifying clear, unique network activity patterns
 
 ---
 
