@@ -3,6 +3,7 @@ import fsp from 'fs/promises';
 import path from 'path';
 import { SessionCompressor } from './services/SessionCompressor.js';
 import { SessionExporter } from './services/SessionExporter.js';
+import { NetworkEventsCleaner } from './services/NetworkEventsCleaner.js';
 
 /**
  * Processes a file by reading its content, decompressing events, extracting metadata, and exporting the session.
@@ -13,9 +14,10 @@ import { SessionExporter } from './services/SessionExporter.js';
  * @param {boolean} verbose - Flag indicating whether to log detailed processing steps.
  * @param {boolean} unsetRrweb - Flag to exclude RRWEB data from the exported JSON.
  * @param {boolean} unsetNetwork - Flag to exclude network data from the exported JSON.
+ * @param {boolean} removeDuplicates - Flag indicating whether duplicate content should be identified and removed.
  * @return {Promise<void>} A promise that resolves when the file has been successfully processed.
  */
-async function processFile(file, sourceDir, outputDir, verbose, unsetRrweb, unsetNetwork) {
+async function processFile(file, sourceDir, outputDir, verbose, unsetRrweb, unsetNetwork, removeDuplicates) {
   const filePath = path.join(sourceDir, file);
 
   if (verbose) {
@@ -45,6 +47,12 @@ async function processFile(file, sourceDir, outputDir, verbose, unsetRrweb, unse
 
       const sessionExporter = new SessionExporter();
       sessionExporter.setMetadata(metadata);
+
+      if (removeDuplicates) {
+        console.log(`🗑️ Remove duplicates...`);
+        events.network = NetworkEventsCleaner.removeDuplicates(events.network);
+      }
+
       sessionExporter.setEvents(events);
 
       if (unsetRrweb) {
@@ -78,9 +86,17 @@ async function processFile(file, sourceDir, outputDir, verbose, unsetRrweb, unse
  * @param {boolean} [verbose=false] Flag indicating whether detailed logging should be enabled.
  * @param {boolean} [unsetRrweb=false] Optional flag for specific processing behavior related to rrweb.
  * @param {boolean} [unsetNetwork=false] Optional flag for specific processing behavior related to network processing.
+ * @param {boolean} [removeDuplicates=false] - If true, duplicate content will be identified and removed.
  * @return {Promise<void>} A promise that resolves when all files are processed and saved to the output directory.
  */
-export async function processFiles(sourceDir = './source', outputDir = './output', verbose = false, unsetRrweb = false, unsetNetwork = false) {
+export async function processFiles(
+  sourceDir = './source',
+  outputDir = './output',
+  verbose = false,
+  unsetRrweb = false,
+  unsetNetwork = false,
+  removeDuplicates = false
+) {
   try {
     if (!fs.existsSync(outputDir)) {
       await fsp.mkdir(outputDir, { recursive: true });
@@ -93,7 +109,7 @@ export async function processFiles(sourceDir = './source', outputDir = './output
     }
 
     for (const file of files) {
-      await processFile(file, sourceDir, outputDir, verbose, unsetRrweb, unsetNetwork);
+      await processFile(file, sourceDir, outputDir, verbose, unsetRrweb, unsetNetwork, removeDuplicates);
     }
 
     if (verbose) {
