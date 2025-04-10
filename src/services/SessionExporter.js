@@ -70,6 +70,17 @@ export class SessionExporter {
   }
 
   /**
+   * Formats the JSON content within the fileContent property to be more readable.
+   * The method parses the current fileContent as JSON, then re-serializes it with indentation.
+   *
+   * @return {void} This method does not return a value.
+   */
+  prettifyContent() {
+    const parsed = JSON.parse(this.fileContent);
+    this.fileContent = JSON.stringify(parsed, null, 4);
+  }
+
+  /**
    * Saves the session content to a file in the specified output directory.
    *
    * @param {string} fileName - The name of the file to save the session content to, without file extension.

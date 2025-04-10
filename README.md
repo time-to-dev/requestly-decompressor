@@ -130,6 +130,7 @@ A comfortable command line interface (CLI) for easy management and configuration
 | `-r, --unset-rrweb`       | Exclude RRWEB data from the exported JSON file. Use this parameter if you do not need RRWEB recordings in your output.     | `false`    |
 | `-n, --unset-network`     | Exclude network data from the exported JSON file. Use this parameter if you do not need network activities in your output. | `false`    |
 | `-d, --remove-duplicates` | Remove duplicate entries from the exported JSON file. Use this parameter to ensure unique records in your output.          | `false`    |
+| `-p, --prettify-content`  | Format and prettify the exported JSON data                                                                                 | `false`    |
 
 **Example Call**:
 
