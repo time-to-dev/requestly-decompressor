@@ -1,6 +1,6 @@
 {
   "name": "@time-to-dev/requestly-decompressor",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A Node.js package for decompressing Requestly sessions.",
   "type": "module",
   "repository": "time-to-dev/requestly-decompressor",
