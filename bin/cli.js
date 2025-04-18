@@ -7,7 +7,7 @@ const program = new Command();
 program
   .name('requestly-decompressor')
   .description('Decompression and clean-up of requestly sessions.')
-  .version('1.0.0')
+  .version('1.1.0')
   .option('-s, --source <path>', 'Path to the source directory', './source')
   .option('-o, --output <path>', 'Path to the output folder', './output')
   .option('-v, --verbose', 'Activate detailed output', false)
